@@ -1,17 +1,67 @@
 
+import { useState } from "react";
 import Layout from "../components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Mail, Plus, Flag, Star } from "lucide-react";
+import { Mail, Plus, Flag, Star, Upload } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+
+const brandFormSchema = z.object({
+  name: z.string().min(2, {
+    message: "Il nome del brand deve avere almeno 2 caratteri",
+  }),
+  industry: z.string({
+    required_error: "Seleziona un settore per il brand",
+  }),
+  description: z.string().optional(),
+  owner: z.string().optional(),
+  parent: z.string().optional(),
+  logo: z.any().optional(),
+  certifications: z.string().optional(),
+  controversies: z.string().optional(),
+});
+
+type BrandFormValues = z.infer<typeof brandFormSchema>;
 
 const ContributePage = () => {
   const { toast } = useToast();
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [submittedBrand, setSubmittedBrand] = useState<BrandFormValues | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const form = useForm<BrandFormValues>({
+    resolver: zodResolver(brandFormSchema),
+    defaultValues: {
+      name: "",
+      industry: "",
+      description: "",
+      owner: "",
+      parent: "",
+      certifications: "",
+      controversies: "",
+    },
+  });
+
+  function onSubmit(data: BrandFormValues) {
+    console.log("Form submission:", data);
+    // In a real implementation, this would save to your database
+    setSubmittedBrand(data);
+    setShowSuccessDialog(true);
+    toast({
+      title: "Brand inviato con successo!",
+      description: "Grazie per il tuo contributo al database.",
+    });
+    form.reset();
+  }
+
+  const handleSimpleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     toast({
       title: "Grazie per il tuo contributo!",
@@ -29,59 +79,192 @@ const ContributePage = () => {
             Ci sono diversi modi in cui puoi partecipare e aiutarci a migliorare.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+          <div className="grid grid-cols-1 gap-8 mb-12">
             <Card>
               <CardHeader>
                 <div className="flex items-center gap-3">
                   <Plus className="h-5 w-5 text-primary" />
-                  <CardTitle>Suggerisci un brand</CardTitle>
+                  <CardTitle>Aggiungi un brand al database</CardTitle>
                 </div>
                 <CardDescription>
-                  Proponi un nuovo brand da aggiungere al nostro database
+                  Inserisci i dettagli di un brand da aggiungere al nostro database
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label htmlFor="brand-name" className="block text-sm font-medium mb-1">
-                      Nome del brand
-                    </label>
-                    <Input 
-                      id="brand-name" 
-                      placeholder="Inserisci il nome del brand"
-                      required
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Nome del brand *</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Es. Nike, Nestlé, Patagonia" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="industry"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Settore *</FormLabel>
+                            <Select 
+                              onValueChange={field.onChange} 
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Seleziona un settore" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                <SelectItem value="food">Alimentare</SelectItem>
+                                <SelectItem value="fashion">Moda e abbigliamento</SelectItem>
+                                <SelectItem value="tech">Tecnologia</SelectItem>
+                                <SelectItem value="beauty">Bellezza e cosmetica</SelectItem>
+                                <SelectItem value="home">Casa e arredamento</SelectItem>
+                                <SelectItem value="other">Altro</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Descrizione</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Breve descrizione del brand"
+                              className="min-h-[100px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Inserisci una breve descrizione del brand e della sua storia
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <div>
-                    <label htmlFor="brand-industry" className="block text-sm font-medium mb-1">
-                      Settore
-                    </label>
-                    <Select>
-                      <SelectTrigger id="brand-industry">
-                        <SelectValue placeholder="Seleziona il settore" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="food">Alimentare</SelectItem>
-                        <SelectItem value="fashion">Moda e abbigliamento</SelectItem>
-                        <SelectItem value="tech">Tecnologia</SelectItem>
-                        <SelectItem value="beauty">Bellezza e cosmetica</SelectItem>
-                        <SelectItem value="home">Casa e arredamento</SelectItem>
-                        <SelectItem value="other">Altro</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <label htmlFor="brand-notes" className="block text-sm font-medium mb-1">
-                      Note o informazioni utili
-                    </label>
-                    <Textarea 
-                      id="brand-notes" 
-                      placeholder="Aggiungi qualsiasi informazione che ritieni utile"
-                      className="min-h-[100px]"
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <FormField
+                        control={form.control}
+                        name="owner"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Proprietario</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Es. Società privata, Pubblico" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="parent"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Gruppo/Azienda Madre</FormLabel>
+                            <FormControl>
+                              <Input placeholder="Es. LVMH, Unilever" {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    <FormField
+                      control={form.control}
+                      name="logo"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Logo (URL)</FormLabel>
+                          <FormControl>
+                            <div className="flex gap-2">
+                              <Input 
+                                placeholder="URL del logo del brand" 
+                                {...field}
+                                value={field.value || ""}
+                                onChange={(e) => field.onChange(e.target.value)}
+                              />
+                              <Button 
+                                type="button" 
+                                variant="outline" 
+                                className="flex gap-2"
+                              >
+                                <Upload size={16} />
+                                Carica
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormDescription>
+                            Inserisci l'URL di un logo esistente o carica un'immagine
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
                     />
-                  </div>
-                  <Button type="submit">Invia suggerimento</Button>
-                </form>
+
+                    <FormField
+                      control={form.control}
+                      name="certifications"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Certificazioni</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Es. B Corp, Fair Trade, Vegan"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Inserisci le certificazioni separate da virgole
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="controversies"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Controversie</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Eventuali controversie conosciute riguardanti il brand"
+                              className="min-h-[100px]"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormDescription>
+                            Inserisci una controversia per riga con fonti se possibile
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button type="submit" className="w-full md:w-auto">Invia brand</Button>
+                  </form>
+                </Form>
               </CardContent>
             </Card>
 
@@ -96,7 +279,7 @@ const ContributePage = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSimpleSubmit} className="space-y-4">
                   <div>
                     <label htmlFor="correction-brand" className="block text-sm font-medium mb-1">
                       Brand interessato
@@ -149,6 +332,32 @@ const ContributePage = () => {
               </CardContent>
             </Card>
           </div>
+
+          <Dialog open={showSuccessDialog} onOpenChange={setShowSuccessDialog}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Brand inviato con successo!</DialogTitle>
+                <DialogDescription>
+                  Grazie per il tuo contributo al database di Brandivori. 
+                  La tua segnalazione verrà esaminata dal nostro team.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="bg-brandivori-mint/20 p-4 rounded-md">
+                {submittedBrand && (
+                  <div className="space-y-2">
+                    <p><strong>Nome:</strong> {submittedBrand.name}</p>
+                    <p><strong>Settore:</strong> {submittedBrand.industry}</p>
+                    {submittedBrand.owner && (
+                      <p><strong>Proprietario:</strong> {submittedBrand.owner}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+              <DialogFooter>
+                <Button onClick={() => setShowSuccessDialog(false)}>Chiudi</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
           <div className="bg-brandivori-blue/20 rounded-lg p-8 mb-12">
             <div className="text-center mb-8">

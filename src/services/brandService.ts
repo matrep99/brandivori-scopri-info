@@ -79,3 +79,36 @@ export const getBrandByName = async (name: string): Promise<BrandInfo | null> =>
     setTimeout(() => resolve(brand || null), 300);
   });
 };
+
+export const addBrand = async (brandData: Partial<BrandInfo>): Promise<BrandInfo | null> => {
+  // In a real implementation, this would send data to your FastAPI backend
+  // For mock purposes, we'll just log and simulate success
+  console.log("Adding brand:", brandData);
+  
+  // Process certifications and controversies from strings to arrays if provided as strings
+  const certifications = typeof brandData.certifications === 'string' 
+    ? brandData.certifications.split(',').map(item => item.trim()).filter(Boolean)
+    : brandData.certifications;
+    
+  const controversies = typeof brandData.controversies === 'string'
+    ? brandData.controversies.split('\n').map(item => item.trim()).filter(Boolean)
+    : brandData.controversies;
+
+  // Create a new brand with the provided data
+  const newBrand: BrandInfo = {
+    name: brandData.name || 'Unnamed Brand',
+    logo: brandData.logo,
+    owner: brandData.owner,
+    parent: brandData.parent,
+    industry: brandData.industry,
+    facts: brandData.facts || [],
+    certifications: certifications || [],
+    controversies: controversies || []
+  };
+  
+  // In a real app, you'd add this to your database
+  // For demo purposes, we'll just return the created brand
+  return new Promise((resolve) => {
+    setTimeout(() => resolve(newBrand), 500);
+  });
+};
