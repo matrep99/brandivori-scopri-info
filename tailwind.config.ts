@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,13 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				brandivori: {
+					mint: '#E0F5E6',
+					peach: '#FDE1D3',
+					yellow: '#FEF7CD',
+					blue: '#D3E4FD',
+					gray: '#F1F0FB',
 				}
 			},
 			borderRadius: {
@@ -70,25 +78,43 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'fade-in': {
+					'0%': { opacity: '0', transform: 'translateY(10px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'fade-out': {
+					'0%': { opacity: '1', transform: 'translateY(0)' },
+					'100%': { opacity: '0', transform: 'translateY(10px)' }
+				},
+				'fox-appear': {
+					'0%': { opacity: '0', transform: 'translateY(20px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
+				},
+				'fox-disappear': {
+					'0%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+					'50%': { opacity: '0.8', transform: 'translateY(-10px) scale(0.9)' },
+					'100%': { opacity: '0', transform: 'translateY(-30px) scale(0.8)' }
+				},
+				'search-appear': {
+					'0%': { opacity: '0', transform: 'translateY(30px)' },
+					'100%': { opacity: '1', transform: 'translateY(0)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'fade-in': 'fade-in 0.5s ease-out',
+				'fade-out': 'fade-out 0.5s ease-out',
+				'fox-appear': 'fox-appear 0.7s ease-out forwards',
+				'fox-disappear': 'fox-disappear 0.7s ease-out forwards',
+				'search-appear': 'search-appear 0.7s ease-out 0.5s forwards'
 			}
 		}
 	},
