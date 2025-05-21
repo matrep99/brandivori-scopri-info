@@ -1,7 +1,7 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Menu, Search } from "lucide-react";
+import { Database, Menu, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navbar = () => {
@@ -18,6 +18,10 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <div className="hidden md:flex items-center space-x-6">
           <Link to="/" className="text-gray-700 hover:text-brandivori-blue">Home</Link>
+          <Link to="/brands" className="text-gray-700 hover:text-brandivori-blue flex items-center gap-1">
+            <Database size={16} />
+            <span>Database</span>
+          </Link>
           <Link to="/mission" className="text-gray-700 hover:text-brandivori-blue">Missione</Link>
           <Link to="/content" className="text-gray-700 hover:text-brandivori-blue">Contenuti</Link>
           <Link to="/contribute" className="text-gray-700 hover:text-brandivori-blue">Contribuisci</Link>
@@ -41,6 +45,10 @@ const Navbar = () => {
         <div className="md:hidden bg-white border-b p-4 animate-fade-in">
           <div className="flex flex-col space-y-4">
             <Link to="/" className="text-gray-700 hover:text-brandivori-blue px-2 py-1">Home</Link>
+            <Link to="/brands" className="text-gray-700 hover:text-brandivori-blue px-2 py-1 flex items-center gap-1">
+              <Database size={16} />
+              <span>Database</span>
+            </Link>
             <Link to="/mission" className="text-gray-700 hover:text-brandivori-blue px-2 py-1">Missione</Link>
             <Link to="/content" className="text-gray-700 hover:text-brandivori-blue px-2 py-1">Contenuti</Link>
             <Link to="/contribute" className="text-gray-700 hover:text-brandivori-blue px-2 py-1">Contribuisci</Link>
