@@ -32,11 +32,11 @@ const SearchBar = ({ className = "", isVisible = true }: SearchBarProps) => {
           placeholder="Cerca un brand (es. Nike, Nestlé, Patagonia...)"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pr-24 h-12 text-lg bg-white shadow-sm"
+          className="pr-24 h-12 text-lg bg-white shadow-md rounded-lg"
         />
         <Button 
           type="submit"
-          className="absolute right-1 h-10"
+          className="absolute right-1 h-10 bg-[#0071bc] hover:bg-[#0071bc]/90"
           disabled={!searchTerm.trim()}
         >
           <Search className="mr-2 h-4 w-4" />

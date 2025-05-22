@@ -57,31 +57,33 @@ const BrandsPage = () => {
     <Layout>
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl font-bold mb-6 text-center">Database Brand</h1>
-          <p className="text-center mb-8">
-            Esplora tutti i brand nel nostro database e scopri chi c'è veramente dietro i prodotti che usi.
-          </p>
+          <div className="brand-gradient rounded-lg p-8 mb-8 text-white text-center shadow-lg">
+            <h1 className="text-3xl font-bold mb-4">Database Brand</h1>
+            <p className="mb-6">
+              Esplora tutti i brand nel nostro database e scopri chi c'è veramente dietro i prodotti che usi.
+            </p>
 
-          <div className="relative mb-8">
-            <Input
-              type="text"
-              placeholder="Filtra brand per nome o settore..."
-              className="pl-10"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            <div className="relative max-w-xl mx-auto">
+              <Input
+                type="text"
+                placeholder="Filtra brand per nome o settore..."
+                className="pl-10 bg-white/90 border-white shadow-inner focus:ring-white"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+            </div>
           </div>
 
           {loading ? (
             <div className="text-center py-12">
-              <div className="w-12 h-12 border-4 border-t-brandivori-blue rounded-full animate-spin mx-auto mb-4"></div>
+              <div className="w-12 h-12 border-4 border-t-[#0071bc] rounded-full animate-spin mx-auto mb-4"></div>
               <p>Caricamento brand in corso...</p>
             </div>
           ) : (
             <>
               {filteredBrands.length === 0 ? (
-                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                <div className="text-center py-12 bg-white rounded-lg shadow-sm border">
                   <p className="text-lg text-gray-500">Nessun brand trovato con questi criteri di ricerca.</p>
                 </div>
               ) : (
@@ -92,15 +94,15 @@ const BrandsPage = () => {
                       key={brand.name}
                       className="card-hover"
                     >
-                      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
+                      <div className="bg-white p-6 rounded-lg shadow-md border flex flex-col h-full">
                         <div className="flex items-center mb-4">
                           {brand.logo && (
-                            <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center p-1 border mr-4">
+                            <div className="w-12 h-12 bg-white rounded-md flex items-center justify-center p-1 border mr-4 shadow-sm">
                               <img src={brand.logo} alt={brand.name} className="max-w-full max-h-full object-contain" />
                             </div>
                           )}
                           <div>
-                            <h3 className="font-bold">{brand.name}</h3>
+                            <h3 className="font-bold text-gray-800">{brand.name}</h3>
                             <p className="text-sm text-gray-600">{brand.industry}</p>
                           </div>
                         </div>
